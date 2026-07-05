@@ -1,35 +1,40 @@
-# 1. Remove the top bar from index.html
-with open('/mnt/agents/output/index.html', 'r', encoding='utf-8') as f:
-    content = f.read()
-
-# Remove top bar HTML
-content = content.replace('''<!-- Top Quick Links Bar -->
-    <div class="top-bar" id="topBar">
-        <div class="top-bar-container">
-            <div class="top-bar-links">
-                <a href="tel:0541717283"><i class="fas fa-phone"></i> 0541 71 72 83</a>
-                <a href="https://wa.me/213541717283" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
-                <a href="track.html"><i class="fas fa-search-location"></i> تتبع طلبي</a>
-            </div>
-            <div class="top-bar-social">
-                <span>مطعم عزوڤ - أشهى البرغر والبيتزا</span>
-            </div>
-        </div>
-    </div>
-    ''', '')
-
-# Remove top bar CSS
-content = content.replace('''.top-bar {
-            background: var(--primary);
-            color: var(--white);
-            padding: 8px 0;
-            font-size: 14px;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تتبع طلبك - مطعم عزوق</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF6B00;
+            --secondary: #2B2B2B;
+            --white: #FFFFFF;
+            --light-bg: #F9F9F9;
+            --text-color: #333333;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            color: var(--text-color);
+            background-color: var(--light-bg);
+            line-height: 1.6;
+            padding-top: 80px;
+        }
+        .navbar {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: fixed;
             top: 0;
             width: 100%;
-            z-index: 1001;
+            z-index: 1000;
+            padding: 15px 0;
         }
-        .top-bar-container {
+        .nav-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
@@ -37,164 +42,98 @@ content = content.replace('''.top-bar {
             justify-content: space-between;
             align-items: center;
         }
-        .top-bar-links {
-            display: flex;
-            gap: 25px;
-        }
-        .top-bar-links a {
-            color: var(--white);
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
             text-decoration: none;
-            font-weight: 700;
+        }
+        .nav-links {
             display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: opacity 0.3s;
+            list-style: none;
+            gap: 20px;
         }
-        .top-bar-links a:hover {
-            opacity: 0.8;
+        .nav-links a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
         }
-        .top-bar-social span {
-            font-weight: 500;
-            opacity: 0.9;
+        .nav-links a:hover {
+            color: var(--primary);
         }
-        ''', '')
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px 20px;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .search-box input:focus {
+            border-color: var(--primary);
+        }
+        .search-box button {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .search-box button:hover {
+            background: #e05e00;
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
 
-# Fix navbar position back to top: 0
-content = content.replace('top: 40px;', 'top: 0;')
-
-# Fix hero padding back
-content = content.replace('padding-top: 120px;', 'padding-top: 80px;')
-
-# 2. Fix image paths - they need to be relative paths
-# The images are in the same folder as index.html, so just use the filename
-# But we need to make sure the paths are correct
-
-# Check current image references
-import re
-img_refs = re.findall(r'src="([^"]+\.jpg)"', content)
-print("Current image references:")
-for ref in set(img_refs):
-    print(f"  {ref}")
-# The image paths look correct (just filenames, same folder)
-# Let's also fix the track.html - remove top bar and fix any issues
-
-with open('/mnt/agents/output/track.html', 'r', encoding='utf-8') as f:
-    track_content = f.read()
-
-# Remove top bar from track.html
-track_content = track_content.replace('''<body>
-    <!-- Top Quick Links Bar -->
-    <div class="top-bar" style="background: #FF6B00; color: #fff; padding: 8px 0; font-size: 14px; position: fixed; top: 0; width: 100%; z-index: 1001;">
-        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; gap: 25px;">
-                <a href="tel:0541717283" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i class="fas fa-phone"></i> 0541 71 72 83</a>
-                <a href="https://wa.me/213541717283" target="_blank" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i class="fab fa-whatsapp"></i> واتساب</a>
-                <a href="track.html" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i class="fas fa-search-location"></i> تتبع طلبي</a>
-            </div>
-            <div>
-                <span style="font-weight: 500; opacity: 0.9;">مطعم عزوڤ - أشهى البرغر والبيتزا</span>
-            </div>
+    <!-- القائمة الرئيسية -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">مطعم عزوق</a>
+            <ul class="nav-links">
+                <li><a href="index.html#hero">الرئيسية</a></li>
+                <li><a href="index.html#menu">المنيو</a></li>
+                <li><a href="#" style="color: var(--primary);">تتبع الطلب</a></li>
+            </ul>
         </div>
-    </div>''', '<body>')
+    </nav>
 
-# Fix track page padding
-track_content = track_content.replace('padding-top: 50px; padding-bottom: 80px;', 'padding-bottom: 80px;')
+    <!-- محتوى صفحة التتبع -->
+    <div class="container">
+        <h1>تتبع حالة طلبيتك</h1>
+        <p style="color: #666; margin-bottom: 20px;">أدخل رقم الطلب المرسل إليك في الرسالة النصية لمتابعة حالته مباشرة.</p>
+        <div class="search-box">
+            <input type="text" placeholder="مثال: #10245">
+            <button>تتبع</button>
+        </div>
+    </div>
 
-with open('/mnt/agents/output/track.html', 'w', encoding='utf-8') as f:
-    f.write(track_content)
-
-# Also remove the extra nav links (phone/whatsapp) from navbar in index.html
-content = content.replace('''<ul class="nav-links">
-                <li><a href="#hero">الرئيسية</a></li>
-                <li><a href="#menu">المنيو</a></li>
-                <li><a href="#features">مميزاتنا</a></li>
-                <li><a href="#contact">تواصل معنا</a></li>
-                <li><a href="track.html">تتبع الطلب</a></li>
-                <li><a href="tel:0541717283"><i class="fas fa-phone"></i> 0541 71 72 83</a></li>
-                <li><a href="https://wa.me/213541717283" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a></li>
-            </ul>''', '''<ul class="nav-links">
-                <li><a href="#hero">الرئيسية</a></li>
-                <li><a href="#menu">المنيو</a></li>
-                <li><a href="#features">مميزاتنا</a></li>
-                <li><a href="#contact">تواصل معنا</a></li>
-                <li><a href="track.html">تتبع الطلب</a></li>
-            </ul>''')
-
-with open('/mnt/agents/output/index.html', 'w', encoding='utf-8') as f:
-    f.write(content)
-
-print("✅ Removed top bar from both pages")
-print("✅ Fixed navbar links")
-
-# Verify image files exist
-import os
-output_dir = '/mnt/agents/output/'
-image_files = [f for f in os.listdir(output_dir) if f.endswith('.jpg')]
-print(f"\n📁 Image files in output folder ({len(image_files)}):")
-for img in sorted(image_files):
-    size = os.path.getsize(os.path.join(output_dir, img))
-    print(f"  {img} ({size:,} bytes)")
-# The images are there. The issue might be that the HTML references them as 
-# "تشيز_برغر.jpg" but the actual filename might have encoding issues.
-# Let's check the actual bytes of the filenames
-
-import os
-output_dir = '/mnt/agents/output/'
-
-print("Actual filenames on disk:")
-for f in os.listdir(output_dir):
-    if f.endswith('.jpg'):
-        print(f"  repr: {repr(f)}")
-
-# The filenames look correct. Let me check if the HTML has the exact same strings
-with open('/mnt/agents/output/index.html', 'r', encoding='utf-8') as f:
-    html = f.read()
-
-# Check one specific image reference
-if 'تشيز_برغر.jpg' in html:
-    print("\n✅ 'تشيز_برغر.jpg' found in HTML")
-else:
-    print("\n❌ 'تشيز_برغر.jpg' NOT found in HTML")
-    
-# Let's also check if the file exists
-if os.path.exists('/mnt/agents/output/تشيز_برغر.jpg'):
-    print("✅ File exists on disk")
-else:
-    print("❌ File does NOT exist on disk")
-    # List files to see what's actually there
-    print("Files in output:")
-    for f in os.listdir(output_dir):
-        print(f"  {repr(f)}")
-# Everything looks correct. The images should work when opened locally.
-# Let me verify the final HTML files are clean and correct.
-
-with open('/mnt/agents/output/index.html', 'r', encoding='utf-8') as f:
-    html = f.read()
-
-# Check for any remaining Unsplash URLs
-if 'unsplash' in html.lower():
-    print("⚠️ Still has Unsplash URLs!")
-    import re
-    urls = re.findall(r'https?://[^\s"\']+unsplash[^\s"\']*', html)
-    for u in urls:
-        print(f"  {u}")
-else:
-    print("✅ No Unsplash URLs remaining")
-
-# Check image src attributes
-import re
-img_srcs = re.findall(r'src="([^"]+\.jpg)"', html)
-print(f"\n📷 Image sources in HTML ({len(img_srcs)}):")
-for src in img_srcs:
-    print(f"  {src}")
-
-# File sizes
-import os
-for fname in ['index.html', 'track.html']:
-    path = f'/mnt/agents/output/{fname}'
-    size = os.path.getsize(path)
-    print(f"\n{fname}: {size:,} bytes ({size/1024:.1f} KB)")
-
-print("\n✅ All done! Files are ready.")
-print("\n💡 Note: Images will only show when you open the HTML file from the")
-print("   same folder where the .jpg files are located (same directory).")
+</body>
+</html>
