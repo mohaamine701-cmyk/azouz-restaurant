@@ -1,0 +1,200 @@
+# 1. Remove the top bar from index.html
+with open('/mnt/agents/output/index.html', 'r', encoding='utf-8') as f:
+    content = f.read()
+
+# Remove top bar HTML
+content = content.replace('''<!-- Top Quick Links Bar -->
+    <div class="top-bar" id="topBar">
+        <div class="top-bar-container">
+            <div class="top-bar-links">
+                <a href="tel:0541717283"><i class="fas fa-phone"></i> 0541 71 72 83</a>
+                <a href="https://wa.me/213541717283" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a>
+                <a href="track.html"><i class="fas fa-search-location"></i> تتبع طلبي</a>
+            </div>
+            <div class="top-bar-social">
+                <span>مطعم عزوڤ - أشهى البرغر والبيتزا</span>
+            </div>
+        </div>
+    </div>
+    ''', '')
+
+# Remove top bar CSS
+content = content.replace('''.top-bar {
+            background: var(--primary);
+            color: var(--white);
+            padding: 8px 0;
+            font-size: 14px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1001;
+        }
+        .top-bar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .top-bar-links {
+            display: flex;
+            gap: 25px;
+        }
+        .top-bar-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.3s;
+        }
+        .top-bar-links a:hover {
+            opacity: 0.8;
+        }
+        .top-bar-social span {
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        ''', '')
+
+# Fix navbar position back to top: 0
+content = content.replace('top: 40px;', 'top: 0;')
+
+# Fix hero padding back
+content = content.replace('padding-top: 120px;', 'padding-top: 80px;')
+
+# 2. Fix image paths - they need to be relative paths
+# The images are in the same folder as index.html, so just use the filename
+# But we need to make sure the paths are correct
+
+# Check current image references
+import re
+img_refs = re.findall(r'src="([^"]+\.jpg)"', content)
+print("Current image references:")
+for ref in set(img_refs):
+    print(f"  {ref}")
+# The image paths look correct (just filenames, same folder)
+# Let's also fix the track.html - remove top bar and fix any issues
+
+with open('/mnt/agents/output/track.html', 'r', encoding='utf-8') as f:
+    track_content = f.read()
+
+# Remove top bar from track.html
+track_content = track_content.replace('''<body>
+    <!-- Top Quick Links Bar -->
+    <div class="top-bar" style="background: #FF6B00; color: #fff; padding: 8px 0; font-size: 14px; position: fixed; top: 0; width: 100%; z-index: 1001;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; gap: 25px;">
+                <a href="tel:0541717283" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i class="fas fa-phone"></i> 0541 71 72 83</a>
+                <a href="https://wa.me/213541717283" target="_blank" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i class="fab fa-whatsapp"></i> واتساب</a>
+                <a href="track.html" style="color: #fff; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 6px;"><i class="fas fa-search-location"></i> تتبع طلبي</a>
+            </div>
+            <div>
+                <span style="font-weight: 500; opacity: 0.9;">مطعم عزوڤ - أشهى البرغر والبيتزا</span>
+            </div>
+        </div>
+    </div>''', '<body>')
+
+# Fix track page padding
+track_content = track_content.replace('padding-top: 50px; padding-bottom: 80px;', 'padding-bottom: 80px;')
+
+with open('/mnt/agents/output/track.html', 'w', encoding='utf-8') as f:
+    f.write(track_content)
+
+# Also remove the extra nav links (phone/whatsapp) from navbar in index.html
+content = content.replace('''<ul class="nav-links">
+                <li><a href="#hero">الرئيسية</a></li>
+                <li><a href="#menu">المنيو</a></li>
+                <li><a href="#features">مميزاتنا</a></li>
+                <li><a href="#contact">تواصل معنا</a></li>
+                <li><a href="track.html">تتبع الطلب</a></li>
+                <li><a href="tel:0541717283"><i class="fas fa-phone"></i> 0541 71 72 83</a></li>
+                <li><a href="https://wa.me/213541717283" target="_blank"><i class="fab fa-whatsapp"></i> واتساب</a></li>
+            </ul>''', '''<ul class="nav-links">
+                <li><a href="#hero">الرئيسية</a></li>
+                <li><a href="#menu">المنيو</a></li>
+                <li><a href="#features">مميزاتنا</a></li>
+                <li><a href="#contact">تواصل معنا</a></li>
+                <li><a href="track.html">تتبع الطلب</a></li>
+            </ul>''')
+
+with open('/mnt/agents/output/index.html', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print("✅ Removed top bar from both pages")
+print("✅ Fixed navbar links")
+
+# Verify image files exist
+import os
+output_dir = '/mnt/agents/output/'
+image_files = [f for f in os.listdir(output_dir) if f.endswith('.jpg')]
+print(f"\n📁 Image files in output folder ({len(image_files)}):")
+for img in sorted(image_files):
+    size = os.path.getsize(os.path.join(output_dir, img))
+    print(f"  {img} ({size:,} bytes)")
+# The images are there. The issue might be that the HTML references them as 
+# "تشيز_برغر.jpg" but the actual filename might have encoding issues.
+# Let's check the actual bytes of the filenames
+
+import os
+output_dir = '/mnt/agents/output/'
+
+print("Actual filenames on disk:")
+for f in os.listdir(output_dir):
+    if f.endswith('.jpg'):
+        print(f"  repr: {repr(f)}")
+
+# The filenames look correct. Let me check if the HTML has the exact same strings
+with open('/mnt/agents/output/index.html', 'r', encoding='utf-8') as f:
+    html = f.read()
+
+# Check one specific image reference
+if 'تشيز_برغر.jpg' in html:
+    print("\n✅ 'تشيز_برغر.jpg' found in HTML")
+else:
+    print("\n❌ 'تشيز_برغر.jpg' NOT found in HTML")
+    
+# Let's also check if the file exists
+if os.path.exists('/mnt/agents/output/تشيز_برغر.jpg'):
+    print("✅ File exists on disk")
+else:
+    print("❌ File does NOT exist on disk")
+    # List files to see what's actually there
+    print("Files in output:")
+    for f in os.listdir(output_dir):
+        print(f"  {repr(f)}")
+# Everything looks correct. The images should work when opened locally.
+# Let me verify the final HTML files are clean and correct.
+
+with open('/mnt/agents/output/index.html', 'r', encoding='utf-8') as f:
+    html = f.read()
+
+# Check for any remaining Unsplash URLs
+if 'unsplash' in html.lower():
+    print("⚠️ Still has Unsplash URLs!")
+    import re
+    urls = re.findall(r'https?://[^\s"\']+unsplash[^\s"\']*', html)
+    for u in urls:
+        print(f"  {u}")
+else:
+    print("✅ No Unsplash URLs remaining")
+
+# Check image src attributes
+import re
+img_srcs = re.findall(r'src="([^"]+\.jpg)"', html)
+print(f"\n📷 Image sources in HTML ({len(img_srcs)}):")
+for src in img_srcs:
+    print(f"  {src}")
+
+# File sizes
+import os
+for fname in ['index.html', 'track.html']:
+    path = f'/mnt/agents/output/{fname}'
+    size = os.path.getsize(path)
+    print(f"\n{fname}: {size:,} bytes ({size/1024:.1f} KB)")
+
+print("\n✅ All done! Files are ready.")
+print("\n💡 Note: Images will only show when you open the HTML file from the")
+print("   same folder where the .jpg files are located (same directory).")
